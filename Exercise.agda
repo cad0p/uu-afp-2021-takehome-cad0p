@@ -160,3 +160,25 @@ TreeP (Node ts ts₁) = (TreeP ts + TreeP ts₁) + 2
 TreeP (Leaf x) = 0
 
  -- how do you check isomorphism?
+
+
+
+----------------------
+-------- (c) ---------
+----------------------
+
+{- (4 points)
+    Write a generic size function that counts the number of
+    __Node__ constructors in its argument:
+        gsize : Tree S P → ℕ
+    You may find it helpful to define an auxiliary function of
+    the following type:
+        sumFin : (n : ℕ) → (Fin n → ℕ) → ℕ
+    Such that __sumFin n f__ sums all the natural numbers in the 
+    image of __f__
+-}
+
+-- sums all the natural numbers in the image of f
+sumFin : (n : ℕ) → (Fin n → ℕ) → ℕ
+sumFin zero f = 0
+sumFin (succ n) f = f fzero + sumFin n λ x → f (embed x)
