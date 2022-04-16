@@ -159,4 +159,4 @@ TreeP : TreeS → ℕ
 TreeP (Node ts ts₁) = (TreeP ts + TreeP ts₁) + 2
 TreeP (Leaf x) = 0
 
- 
+ -- how do you check isomorphism?
