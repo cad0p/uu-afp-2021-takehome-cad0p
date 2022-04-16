@@ -111,15 +111,19 @@ nil {P} = Node Nil {!   !}
 cons : {P : ListS → ℕ } → ℕ → Tree ListS P → Tree ListS P
 cons x xs = {!   !}
 
+----------------------
+-------- (b) ---------
+----------------------
 
-
-
-{-
-    to the following tree type:
+{-  (2 points)
+    Define a __TreeS__ and __TreeP__ such that __Tree TreeS TreeP__
+    is isomorphic to the following tree type:
 
         data Tree : Set where
             Node : Tree → Tree → Tree
             Leaf : ℕ → Tree
 -}
+
+
 
  
