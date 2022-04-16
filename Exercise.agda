@@ -260,17 +260,17 @@ foldMap {S} {P} f (Node s x) = f s +M foldMap f (x {! fzero {P s}  !})
 
 open import Agda.Primitive using (Level; _⊔_)
 
-data _×_ {n m : Level} (A : Set n) (B : Set m) : Set (n ⊔ m)  where
-  _,_ : A → B → A × B
+-- data _×_ {n m : Level} (A : Set n) (B : Set m) : Set (n ⊔ m)  where
+--   _,_ : A → B → A × B
 
-infixr 4 _,_
-infixr 2 _×_
+-- infixr 4 _,_
+-- infixr 2 _×_
 
 
-data _⊎_ (A : Set) (B : Set) : Set where
-  inj₁ : (x : A) → A ⊎ B
-  inj₂ : (y : B) → A ⊎ B
-infixr 1 _⊎_
+-- data _⊎_ (A : Set) (B : Set) : Set where
+--   inj₁ : (x : A) → A ⊎ B
+--   inj₂ : (y : B) → A ⊎ B
+-- infixr 1 _⊎_
 
 
 -- Set₁ != Set error
@@ -300,4 +300,28 @@ inr (Node s x) = Node {! an element of S₁ in common with S  !} {!   !}
 
 
 
+----------------------
+-------- (f) ---------
+----------------------
+
+
+{- (5 points)
+    Given a choice of S : Set and P : S → ℕ, we can compute the 
+    pattern functor corresponding to Tree S P as follows:
+
+        data DPair (S : Set) (B : S → Set) : Set where
+            _,_ : (s : S) → B s → DPair S B
+        toPF : (S : Set) → (P : S → ℕ) → Set → Set
+        toPF S P a = DPair S (λ s → Fin (P s) → a)
+-}
+
+data DPair (S : Set) (B : S → Set) : Set where
+    _,_ : (s : S) → B s → DPair S B
+
+toPF : (S : Set) → (P : S → ℕ) → Set → Set
+toPF S P a = DPair S (λ s → Fin (P s) → a)
+
+
+-- since the previous definitions don't work,
+-- there's no point trying to prove them
  
