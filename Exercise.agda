@@ -17,6 +17,11 @@ data ℕ : Set where
 
 {-# BUILTIN NATURAL ℕ #-}
 
+_+_ : ℕ → ℕ → ℕ
+zero + b = b
+succ a + b = succ (a + b)
+
+
 data Fin : ℕ → Set where
   fzero : ∀ {n} → Fin (succ n)
   fsucc : ∀ {n} → Fin n → Fin (succ n)
@@ -35,6 +40,13 @@ record Unit : Set where
   constructor unit
 
 data Empty : Set where
+
+-- There are several ways to embed Fin n in Fin (Succ n).  Try to come
+-- up with one that satisfies the correctness property below (and
+-- prove that it does).
+embed : {n : ℕ} → Fin n → Fin (succ n)
+embed fzero = fzero
+embed {n} (fsucc fi) = fsucc (embed fi)
 
 
 ----------------------
@@ -96,17 +108,31 @@ ListP Nil = 0
 ListP (Cons zero) = 1
 ListP (Cons (succ x)) = succ (ListP (Cons x))
 
--- -- to define the constructors we need a 
--- -- Fin (P Nil) → Tree ListS P
--- finToTree : {P : ListS → ℕ } {s : ListS} → Fin (P s) → Tree ListS P
--- finToTree {P} {s} with P s
--- finToTree {P} {Nil} | zero = λ x → Node s (λ x₁ → ?)
--- finToTree {P} {Cons x} | zero = λ x → Node s (λ x₁ → ?))
--- finToTree {P} {s} | succ x = {!   !}
+-- to define the constructors we need a 
+-- Fin (P Nil) → Tree ListS P
+tlookup : {S : Set} {P : S → ℕ } {s : S} {t : Tree S P} → Fin (P s) → Tree S P
+tlookup {S} {P} {s} {Node s₁ f} with P s
+-- we have arrived
+... | zero = λ _ → Node s₁ f
+... | succ n = {! finToTree {S} {P} {s₁}  !}
+
+-- tlookup : {S : Set} {P : S → ℕ} → ∀ {s : S}
+--     → Tree S P → Fin (P s) → Tree S P
+-- tlookup {S} {P} {s} (Node s₁ x) f = {!   !}
+
+dec : (n : ℕ) {f : Fin n} → ℕ
+dec (succ n) = n
 
 -- Also define the constructor functions:
-nil : {P : ListS → ℕ } → Tree ListS P
-nil {P} = Node Nil {!   !}
+nil : {P : ListS → ℕ } {s : ListS} {t : Tree ListS P} → Tree ListS P
+nil {P} {s} {Node s₁ f} with P s
+nil {P} {s} {Node Nil f} | zero = Node Nil f
+nil {P} {s} {Node (Cons zero) f} | zero 
+    = Node Nil λ x → f {! embed   !}
+nil {P} {s} {Node (Cons (succ x)) f} | zero 
+    = nil {P} {s} {Node {!   !} {!   !}}
+... | succ n = {!   !}
+--tlookup {ListS} {P} {s} {t} {! fzero {P s}  !}
 
 cons : {P : ListS → ℕ } → ℕ → Tree ListS P → Tree ListS P
 cons x xs = {!   !}
@@ -124,6 +150,13 @@ cons x xs = {!   !}
             Leaf : ℕ → Tree
 -}
 
+data TreeS : Set where
+    Node : TreeS → TreeS → TreeS
+    Leaf : ℕ → TreeS
 
+-- For every shape s : S , there are P s recursive subtrees
+TreeP : TreeS → ℕ
+TreeP (Node ts ts₁) = (TreeP ts + TreeP ts₁) + 2
+TreeP (Leaf x) = 0
 
  
