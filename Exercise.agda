@@ -112,7 +112,9 @@ ListP : ListS → ℕ
 ListP Nil = 0
 ListP (Cons n) = succ n
 
-ListEnd : Fin (ListP Nil) → Tree ListS ListP
+TList = Tree ListS ListP
+
+ListEnd : Fin (ListP Nil) → TList
 ListEnd ()
 
 -- this below was the old wrong approach
@@ -147,10 +149,10 @@ ListEnd ()
 
 
 -- better approach
-nil : Tree ListS ListP
+nil : TList
 nil = Node Nil ListEnd
 
-cons : ℕ → Tree ListS ListP → Tree ListS ListP
+cons : ℕ → TList → TList
 cons n t = Node (Cons n) (λ x → t)
 
 ----------------------
