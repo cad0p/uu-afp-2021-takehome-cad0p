@@ -187,16 +187,18 @@ TreeP : TreeS → ℕ
 TreeP (Leaf i x) = i
 TreeP (Node i) = i
 
+TTree = Tree TreeS TreeP
+
  -- how do you check isomorphism?
  -- answer: by creating constructors that look the same,
  -- just like for List (nil and cons)
 
-TreeEnd : {x : ℕ} → Fin (TreeP (Leaf 0 x)) → Tree TreeS TreeP
+TreeEnd : {x : ℕ} → Fin (TreeP (Leaf 0 x)) → TTree
 TreeEnd ()
 
 
-leaf : {i : ℕ} → ℕ → {t : Tree TreeS TreeP} → Tree TreeS TreeP
-leaf {zero} x {_} = Node (Leaf 0 x) (TreeEnd {x})
+leaf : {i : ℕ} → ℕ → {t : TTree} → TTree
+leaf {zero} x = Node (Leaf 0 x) (TreeEnd {x})
 leaf {i} x {t} = Node (Leaf i x) λ f → t
 
 
