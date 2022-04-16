@@ -109,38 +109,49 @@ data ListS : Set where
 -}
 
 ListP : ListS → ℕ
-ListP Nil = 1
-ListP (Cons zero) = 2
-ListP (Cons (succ x)) = succ (ListP (Cons x))
+ListP Nil = 0
+ListP (Cons n) = succ n
+
+ListEnd : Fin (ListP Nil) → Tree ListS ListP
+ListEnd ()
+
+-- this below was the old wrong approach
 
 -- to define the constructors we need a 
 -- Fin (P Nil) → Tree ListS P
-tlookup : {S : Set} {P : S → ℕ } {s : S} {t : Tree S P} → Fin (P s) → Tree S P
-tlookup {S} {P} {s} {Node s₁ f} with P s
--- we have arrived
-... | zero = λ _ → Node s₁ f
-... | succ n = {! finToTree {S} {P} {s₁}  !}
+-- tlookup : {S : Set} {P : S → ℕ } {s : S} {t : Tree S P} 
+--     → Fin (P s) → Tree S P
+-- tlookup {S} {P} {s} {Node s₁ f} with P s
+-- -- we have arrived
+-- ... | zero = λ _ → Node s₁ f
+-- ... | succ n = {! finToTree {S} {P} {s₁}  !}
 
--- tlookup : {S : Set} {P : S → ℕ} → ∀ {s : S}
---     → Tree S P → Fin (P s) → Tree S P
--- tlookup {S} {P} {s} (Node s₁ x) f = {!   !}
+-- -- tlookup : {S : Set} {P : S → ℕ} → ∀ {s : S}
+-- --     → Tree S P → Fin (P s) → Tree S P
+-- -- tlookup {S} {P} {s} (Node s₁ x) f = {!   !}
 
-dec : (n : ℕ) {f : Fin n} → ℕ
-dec (succ n) = n
+-- dec : (n : ℕ) {f : Fin n} → ℕ
+-- dec (succ n) = n
 
 -- Also define the constructor functions:
-nil : {P : ListS → ℕ } {s : ListS} {t : Tree ListS P} → Tree ListS P
-nil {P} {s} {Node s₁ f} with P s
-nil {P} {s} {Node Nil f} | zero = Node Nil f
-nil {P} {s} {Node (Cons zero) f} | zero 
-    = Node Nil λ x → f {! embed   !}
-nil {P} {s} {Node (Cons (succ x)) f} | zero 
-    = nil {P} {s} {Node {!   !} {!   !}}
-... | succ n = {!   !}
---tlookup {ListS} {P} {s} {t} {! fzero {P s}  !}
+-- nil : {P : ListS → ℕ } {s : ListS} {t : Tree ListS P} → Tree ListS P
+-- nil {P} {s} {Node s₁ f} with P s
+-- nil {P} {s} {Node Nil f} | zero = Node Nil f
+-- nil {P} {s} {Node (Cons zero) f} | zero 
+--     = Node Nil λ x → f {! embed   !}
+-- nil {P} {s} {Node (Cons (succ x)) f} | zero 
+--     = nil {P} {s} {Node {!   !} {!   !}}
+-- ... | succ n = {!   !}
+-- --tlookup {ListS} {P} {s} {t} {! fzero {P s}  !}
+
+
+
+-- better approach
+nil : Tree ListS ListP
+nil = Node Nil ListEnd
 
 cons : {P : ListS → ℕ } → ℕ → Tree ListS P → Tree ListS P
-cons x xs = {!   !}
+cons n t = Node (Cons n) (λ x → t)
 
 ----------------------
 -------- (b) ---------
