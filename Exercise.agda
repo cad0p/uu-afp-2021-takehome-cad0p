@@ -201,3 +201,43 @@ sumFin (succ n) f = f (craftFin (succ n) {fzero})
 
 gsize : {S : Set} {P : S → ℕ} → Tree S P → ℕ
 gsize {S} {P} (Node s f) = sumFin (P s) forget
+
+
+----------------------
+-------- (d) ---------
+----------------------
+
+{- (4 points)
+    Let M : Set be a monoid, that is, we have a zero element z : M
+    and `addition` operation _+M_ : M → M → M . 
+    Define an analogue of Haskell's foldMap function on finitely 
+    branching trees:
+
+        foldMap : (S → M) → Tree S P → M
+-}
+
+data M : Set where
+    z : M
+    _+M_ : M → M → M
+
+foldMap : {S : Set} {P : S → ℕ} → (S → M) → Tree S P → M
+foldMap {S} {P} f (Node s x) = f s +M foldMap f (x {! fzero {P s}  !})
+
+
+
+----------------------
+-------- (e) ---------
+----------------------
+
+
+{- (5 points)
+    Show that Tree types are closed under coproducts. 
+    That is, define operations:
+        
+        _⊕ₛ_ : (S : Set) → (S₁ : Set) → Set
+        _⊕ₚ_ : (P : S → ℕ) → (P₁ : S₁ → ℕ) → (S ⊕ₛ S₁ → ℕ)
+        inl : Tree S P → Tree (S ⊕ₛ S₁) (P ⊕ₚ P₁)
+        inr : Tree S₁ P₁ → Tree (S ⊕ₛ S₁) (P ⊕ₚ P₁)
+
+-}
+
