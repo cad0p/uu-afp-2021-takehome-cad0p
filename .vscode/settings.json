@@ -3,6 +3,8 @@
     "ℕ": true,
     "⊤": true,
     "∨": true,
-    "σ": true
+    "σ": true,
+    "∪": true,
+    "×": true
   }
 }

@@ -241,3 +241,63 @@ foldMap {S} {P} f (Node s x) = f s +M foldMap f (x {! fzero {P s}  !})
 
 -}
 
+-- postulate
+--   Level : Set
+
+-- -- MAlonzo compiles Level to (). This should be safe, because it is
+-- -- not possible to pattern match on levels.
+
+-- {-# BUILTIN LEVEL Level #-}
+
+-- postulate
+--   lzero : Level
+--   lsuc  : (n : Level) → Level
+--   _⊔_   : (n m : Level) → Level
+
+-- {-# BUILTIN LEVELZERO lzero #-}
+-- {-# BUILTIN LEVELSUC  lsuc  #-}
+-- {-# BUILTIN LEVELMAX  _⊔_   #-}
+
+open import Agda.Primitive using (Level; _⊔_)
+
+data _×_ {n m : Level} (A : Set n) (B : Set m) : Set (n ⊔ m)  where
+  _,_ : A → B → A × B
+
+infixr 4 _,_
+infixr 2 _×_
+
+
+data _⊎_ (A : Set) (B : Set) : Set where
+  inj₁ : (x : A) → A ⊎ B
+  inj₂ : (y : B) → A ⊎ B
+infixr 1 _⊎_
+
+
+-- Set₁ != Set error
+-- Set × Set should be a sort, but it isn't
+-- _⊕ₛ_ : (S : Set) → (S₁ : Set) → Set × Set
+-- S ⊕ₛ S₁ = S , S₁
+
+_⊕ₛ_ : (S : Set) → (S₁ : Set) → Set
+S ⊕ₛ S₁ = S
+
+_⊕ₚ_ : {S S₁ : Set} → (P : S → ℕ) → (P₁ : S₁ → ℕ) → ((S ⊕ₛ S₁) → ℕ)
+_⊕ₚ_  {S} {S₁} P  P₁ = {! λ (S ⊕ₛ S₁) → (P S) + (P₁ S₁) - elements in common   !}
+
+
+-- elemToSets : {S S₁ : Set} 
+
+inl : {S S₁ : Set} {P : S → ℕ} {P₁ : S₁ → ℕ} 
+    → Tree S P → Tree (S ⊕ₛ S₁) (P ⊕ₚ P₁)
+inl (Node s x) = Node {! an element of S in common with S₁  !} {!   !}
+
+
+
+inr : {S S₁ : Set} {P : S → ℕ} {P₁ : S₁ → ℕ} 
+    → Tree S₁ P₁ → Tree (S ⊕ₛ S₁) (P ⊕ₚ P₁)
+inr (Node s x) = Node {! an element of S₁ in common with S  !} {!   !}
+
+
+
+
+ 
