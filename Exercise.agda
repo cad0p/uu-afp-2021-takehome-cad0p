@@ -150,7 +150,7 @@ ListEnd ()
 nil : Tree ListS ListP
 nil = Node Nil ListEnd
 
-cons : {P : ListS → ℕ } → ℕ → Tree ListS P → Tree ListS P
+cons : ℕ → Tree ListS ListP → Tree ListS ListP
 cons n t = Node (Cons n) (λ x → t)
 
 ----------------------
