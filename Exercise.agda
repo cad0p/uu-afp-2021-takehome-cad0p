@@ -170,15 +170,32 @@ data TreeS : Set where
     -- this constructor might have one parameter more than it should
     -- judging from ListS
     -- see TestExer for examples
-    Node : TreeS → TreeS → TreeS
-    Leaf : ℕ → TreeS
+    -- Node : TreeS → TreeS → TreeS
+
+    -- now the node has a natural parameter 
+    -- that represents the order of the node 
+    -- since they are ordered according 
+    -- to pre-order traversal
+    Node : ℕ → TreeS
+    -- this instead also represents the actual value of the leaf
+    Leaf : ℕ → ℕ → TreeS
 
 -- For every shape s : S , there are P s recursive subtrees
 TreeP : TreeS → ℕ
-TreeP (Node ts ts₁) = TreeP ts + TreeP ts₁
-TreeP (Leaf x) = 1
+TreeP (Leaf i x) = i
+TreeP (Node i) = i
 
  -- how do you check isomorphism?
+ -- answer: by creating constructors that look the same,
+ -- just like for List (nil and cons)
+
+TreeEnd : {x : ℕ} → Fin (TreeP (Leaf 0 x)) → Tree TreeS TreeP
+TreeEnd ()
+
+
+leaf : {i : ℕ} → ℕ → {t : Tree TreeS TreeP} → Tree TreeS TreeP
+leaf {zero} x {_} = Node (Leaf 0 x) (TreeEnd {x})
+leaf {i} x {t} = Node (Leaf i x) λ f → t
 
 
 
