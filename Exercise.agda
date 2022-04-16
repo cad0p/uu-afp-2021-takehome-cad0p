@@ -41,6 +41,11 @@ record Unit : Set where
 
 data Empty : Set where
 
+
+forget : {n : ℕ} → Fin n → ℕ
+forget fzero = succ zero
+forget (fsucc fi) = succ (forget fi)
+
 -- There are several ways to embed Fin n in Fin (Succ n).  Try to come
 -- up with one that satisfies the correctness property below (and
 -- prove that it does).
@@ -104,8 +109,8 @@ data ListS : Set where
 -}
 
 ListP : ListS → ℕ
-ListP Nil = 0
-ListP (Cons zero) = 1
+ListP Nil = 1
+ListP (Cons zero) = 2
 ListP (Cons (succ x)) = succ (ListP (Cons x))
 
 -- to define the constructors we need a 
@@ -151,13 +156,16 @@ cons x xs = {!   !}
 -}
 
 data TreeS : Set where
+    -- this constructor might have one parameter more than it should
+    -- judging from ListS
+    -- see TestExer for examples
     Node : TreeS → TreeS → TreeS
     Leaf : ℕ → TreeS
 
 -- For every shape s : S , there are P s recursive subtrees
 TreeP : TreeS → ℕ
-TreeP (Node ts ts₁) = (TreeP ts + TreeP ts₁) + 2
-TreeP (Leaf x) = 0
+TreeP (Node ts ts₁) = TreeP ts + TreeP ts₁
+TreeP (Leaf x) = 1
 
  -- how do you check isomorphism?
 
@@ -178,7 +186,18 @@ TreeP (Leaf x) = 0
     image of __f__
 -}
 
+-- it seems to work but I don't know why it needs
+-- this useless implicit argument
+-- other than for ruling out the n ≡ 0 case
+craftFin : (n : ℕ) {f : Fin n} → Fin n
+craftFin (succ zero) = fzero
+craftFin (succ (succ n)) {f} = fsucc (craftFin (succ n) {fzero})
+
 -- sums all the natural numbers in the image of f
 sumFin : (n : ℕ) → (Fin n → ℕ) → ℕ
 sumFin zero f = 0
-sumFin (succ n) f = f fzero + sumFin n λ x → f (embed x)
+sumFin (succ n) f = f (craftFin (succ n) {fzero}) 
+    -- + sumFin n λ x → f (embed x)
+
+gsize : {S : Set} {P : S → ℕ} → Tree S P → ℕ
+gsize {S} {P} (Node s f) = sumFin (P s) forget
