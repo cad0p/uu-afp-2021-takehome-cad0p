@@ -202,6 +202,11 @@ leaf {zero} x = Node (Leaf 0 x) (TreeEnd {x})
 leaf {i} x {t} = Node (Leaf i x) λ f → t
 
 
+node : {i : ℕ} → TTree → TTree → TTree
+node {i} (Node (Leaf iₗ xₗ) x) r = Node (Node i) (λ x → {!   !})
+node {i} (Node (Node iₗ) sₗ) r = Node (Node i) (λ x → {!   !})
+
+
 
 ----------------------
 -------- (c) ---------

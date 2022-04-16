@@ -25,6 +25,9 @@ testListCons2Nil = refl
 -------- (b) ---------
 ----------------------
 
+testTreeLeaf : leaf {0} 1 ≡ Node (Leaf 0 1) (TreeEnd {1})
+testTreeLeaf = refl
+
 
 ----------------------
 -------- (c) ---------
