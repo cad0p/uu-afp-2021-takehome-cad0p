@@ -7,8 +7,18 @@ open Exercise
 -------- (a) ---------
 ----------------------
 
-testListC : ListP (Cons 3) ≡ 4
-testListC = refl
+testListP : ListP (Cons 3) ≡ 4
+testListP = refl
+
+testListNil : nil ≡ Node Nil ListEnd
+testListNil = refl
+
+testListCons1Nil : cons 1 nil ≡ Node (Cons 1) (λ x → Node Nil ListEnd)
+testListCons1Nil = refl
+
+
+testListCons2Nil : cons 2 nil ≡ Node (Cons 2) (λ x → Node Nil ListEnd)
+testListCons2Nil = refl
 
 
 ----------------------
