@@ -110,7 +110,8 @@ data ListS : Set where
 
 ListP : ListS → ℕ
 ListP Nil = 0
-ListP (Cons n) = succ n
+-- it's got one subtree (no choice but continue with the list)
+ListP (Cons n) = 1
 
 TList = Tree ListS ListP
 
@@ -174,18 +175,15 @@ data TreeS : Set where
     -- see TestExer for examples
     -- Node : TreeS → TreeS → TreeS
 
-    -- now the node has a natural parameter 
-    -- that represents the order of the node 
-    -- since they are ordered according 
-    -- to pre-order traversal
-    Node : ℕ → TreeS
-    -- this instead also represents the actual value of the leaf
-    Leaf : ℕ → ℕ → TreeS
+    Node : TreeS
+    -- this also represents the actual value of the leaf
+    Leaf : ℕ → TreeS
 
 -- For every shape s : S , there are P s recursive subtrees
 TreeP : TreeS → ℕ
-TreeP (Leaf i x) = i
-TreeP (Node i) = i
+TreeP (Leaf x) = 0
+-- there are 2 recursive subtrees (left subtree and right subtree)
+TreeP Node = 2
 
 TTree = Tree TreeS TreeP
 
@@ -193,18 +191,32 @@ TTree = Tree TreeS TreeP
  -- answer: by creating constructors that look the same,
  -- just like for List (nil and cons)
 
-TreeEnd : {x : ℕ} → Fin (TreeP (Leaf 0 x)) → TTree
+TreeEnd : {x : ℕ} → Fin (TreeP (Leaf x)) → TTree
 TreeEnd ()
 
+TreeNodeSubTrees : TTree → TTree → Fin 2 → TTree
+TreeNodeSubTrees l r fzero = l
+TreeNodeSubTrees l r (fsucc f) = r
 
-leaf : {i : ℕ} → ℕ → {t : TTree} → TTree
-leaf {zero} x = Node (Leaf 0 x) (TreeEnd {x})
-leaf {i} x {t} = Node (Leaf i x) λ f → t
+-- new attempt here very neat!
+
+leaf : ℕ → TTree
+leaf x = Node (Leaf x) (TreeEnd {x})
 
 
-node : {i : ℕ} → TTree → TTree → TTree
-node {i} (Node (Leaf iₗ xₗ) x) r = Node (Node i) (λ x → {!   !})
-node {i} (Node (Node iₗ) sₗ) r = Node (Node i) (λ x → {!   !})
+node : TTree → TTree → TTree
+node l r = Node Node (TreeNodeSubTrees l r)
+
+-- old attempt below:
+
+-- now the node has a natural parameter 
+-- that represents the order of the node 
+-- since they are ordered according 
+-- to pre-order traversal
+
+-- node : {i : ℕ} → TTree → TTree → TTree
+-- node {i} (Node (Leaf iₗ xₗ) x) r = Node (Node i) (λ x → {!   !})
+-- node {i} (Node (Node iₗ) sₗ) r = Node (Node i) (λ x → {!   !})
 
 
 

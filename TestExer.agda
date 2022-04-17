@@ -7,7 +7,7 @@ open Exercise
 -------- (a) ---------
 ----------------------
 
-testListP : ListP (Cons 3) ≡ 4
+testListP : ListP (Cons 3) ≡ 1
 testListP = refl
 
 testListNil : nil ≡ Node Nil ListEnd
@@ -25,8 +25,15 @@ testListCons2Nil = refl
 -------- (b) ---------
 ----------------------
 
-testTreeLeaf : leaf {0} 1 ≡ Node (Leaf 0 1) (TreeEnd {1})
+testTreeLeaf : leaf 1 ≡ Node (Leaf 1) TreeEnd
 testTreeLeaf = refl
+
+
+testTreeNode1 : node (leaf 0) (leaf 1) ≡ 
+    Node Node (TreeNodeSubTrees 
+        (Node (Leaf zero) TreeEnd) 
+        (Node (Leaf 1) TreeEnd))
+testTreeNode1 = refl
 
 
 ----------------------
