@@ -235,22 +235,53 @@ node l r = Node Node (TreeNodeSubTrees l r)
     image of __f__
 -}
 
+-- old approach, was just a hack..
+
 -- it seems to work but I don't know why it needs
 -- this useless implicit argument
 -- other than for ruling out the n ≡ 0 case
 craftFin : (n : ℕ) {f : Fin n} → Fin n
 craftFin (succ zero) = fzero
-craftFin (succ (succ n)) {f} = fsucc (craftFin (succ n) {fzero})
+craftFin (succ (succ n)) = fsucc (craftFin (succ n) {fzero})
+
 
 -- sums all the natural numbers in the image of f
 sumFin : (n : ℕ) → (Fin n → ℕ) → ℕ
 sumFin zero f = 0
 sumFin (succ n) f = f (craftFin (succ n) {fzero}) 
-    -- + sumFin n λ x → f (embed x)
+    + sumFin n λ x → f (embed x)
 
-gsize : {S : Set} {P : S → ℕ} → Tree S P → ℕ
-gsize {S} {P} (Node s f) = sumFin (P s) forget
+-- I think I need a function from TTree to ℕ
+-- convertForSum : {S : Set} {P : S → ℕ} 
 
+-- gsize : {S : Set} {P : S → ℕ} → Tree S P → ℕ
+-- gsize {S} {P} (Node s f) = sumFin (P s) λ _ → P s
+
+
+-- new approach:
+
+{-# TERMINATING #-}
+mutual
+    -- i need some list comprehension here, will define here:
+    gsubsize : (S : Set) (P : S → ℕ) → (n : ℕ)
+        → (Fin (n) → Tree S P) → ℕ
+    gsubsize S P zero f = zero
+    gsubsize S P (succ n) f = gsize {S} {P} (f (craftFin (succ n) {fzero})) 
+        + gsubsize S P n λ x → f (embed x)
+
+    gsize : {S : Set} {P : S → ℕ} → Tree S P → ℕ
+    gsize {S} {P} (Node s f) with P s
+    -- an example of this case is nil = Node Nil ListEnd
+    -- or leaf x = Node (Leaf x) (TreeEnd {x})
+    ... | zero = 1
+    -- simple example: cons nil is a Node Node (see tests), so gsize ≡ 2
+    -- cons has P s ≡ 1, and nil has P s ≡ 0
+    ... | succ n = succ n + gsubsize S P (succ n) f 
+    -- + gsize {S} {P} (f (craftFin {! n  !}))
+
+-- -- sums all the natural numbers in the image of f
+-- sumFin : (n : ℕ) → (Fin n → ℕ) → ℕ
+-- sumFin n P = {!   !}
 
 ----------------------
 -------- (d) ---------
@@ -338,7 +369,7 @@ _⊕ₚ_  {S} {S₁} P  P₁ = {! λ (S ⊕ₛ S₁) → (P S) + (P₁ S₁) - e
 
 inl : {S S₁ : Set} {P : S → ℕ} {P₁ : S₁ → ℕ} 
     → Tree S P → Tree (S ⊕ₛ S₁) (P ⊕ₚ P₁)
-inl (Node s x) = Node {! an element of S in common with S₁  !} {!   !}
+inl (Node s x) = Node {! an element of S in common with S₁  !} {!  !}
 
 
 
