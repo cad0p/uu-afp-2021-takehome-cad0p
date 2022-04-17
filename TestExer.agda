@@ -184,7 +184,11 @@ testFoldMapTreeNodeSimple = refl
 testFoldMapTreeNode7 : foldMap showNode node7 ≡
     (((z +M z) +M (z +M z)) +M 
         -- node (leaf 1) (leaf 2)
-        ((((z +M z) +M (z +M z)) +M ((z +M (z +M z)) +M (z +M z)))
+        ((((z +M z) +M (z +M z)) +M 
+            -- leaf 2
+            ((z +M (z +M z)) +M 
+            -- leaf 1
+            (z +M z)))
         -- leaf 0
         +M z))
 testFoldMapTreeNode7 = refl
