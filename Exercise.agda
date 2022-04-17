@@ -380,20 +380,23 @@ _⊕ₛ_ : (S : Set) → (S₁ : Set) → Set
 S ⊕ₛ S₁ = S
 
 _⊕ₚ_ : {S S₁ : Set} → (P : S → ℕ) → (P₁ : S₁ → ℕ) → ((S ⊕ₛ S₁) → ℕ)
-_⊕ₚ_  {S} {S₁} P  P₁ = {! λ (S ⊕ₛ S₁) → (P S) + (P₁ S₁) - elements in common   !}
+_⊕ₚ_  {S} {S₁} P  P₁ = λ s → P s
+-- {! λ (S ⊕ₛ S₁) → (P S) + (P₁ S₁) - elements in common   !}
 
 
 -- elemToSets : {S S₁ : Set} 
 
 inl : {S S₁ : Set} {P : S → ℕ} {P₁ : S₁ → ℕ} 
     → Tree S P → Tree (S ⊕ₛ S₁) (P ⊕ₚ P₁)
-inl (Node s x) = Node {! an element of S in common with S₁  !} {!  !}
+inl {S} {S₁} {P} {P₁} (Node s x) = Node s x
+-- Node {! an element of S in common with S₁  !} {!  !}
 
 
 
 inr : {S S₁ : Set} {P : S → ℕ} {P₁ : S₁ → ℕ} 
     → Tree S₁ P₁ → Tree (S ⊕ₛ S₁) (P ⊕ₚ P₁)
-inr (Node s x) = Node {! an element of S₁ in common with S  !} {!   !}
+inr (Node s₁ x₁) = Node {! s₁  !} {!   !}
+-- Node {! an element of S₁ in common with S  !} {!   !}
 
 
 
@@ -423,3 +426,20 @@ toPF S P a = DPair S (λ s → Fin (P s) → a)
 -- since the previous definitions don't work,
 -- there's no point trying to prove them
  
+-- but I will see what I can do anyways.
+
+-- we have to create a DEither that looks like the
+-- DPair
+
+-- data Pair (a b : Set) : Set where
+--   _,_ : a -> b -> Pair a b
+
+-- data Either (a b : Set) : Set where
+--   inl : a -> Either a b
+--   inr : b -> Either a b
+
+
+data DEither (S : Set) (B : S → Set) : Set where
+    Inl : (s : S) → DEither S B
+    Inr : {s : S} → B s → DEither S B
+
