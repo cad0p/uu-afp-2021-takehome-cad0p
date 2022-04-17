@@ -376,28 +376,52 @@ open import Agda.Primitive using (Level; _⊔_)
 -- _⊕ₛ_ : (S : Set) → (S₁ : Set) → Set × Set
 -- S ⊕ₛ S₁ = S , S₁
 
-_⊕ₛ_ : (S : Set) → (S₁ : Set) → Set
-S ⊕ₛ S₁ = S
+-- this below compiles but works only for inl so not really useful
 
-_⊕ₚ_ : {S S₁ : Set} → (P : S → ℕ) → (P₁ : S₁ → ℕ) → ((S ⊕ₛ S₁) → ℕ)
-_⊕ₚ_  {S} {S₁} P  P₁ = λ s → P s
--- {! λ (S ⊕ₛ S₁) → (P S) + (P₁ S₁) - elements in common   !}
+-- _⊕ₛ_ : (S : Set) → (S₁ : Set) → Set
+-- S ⊕ₛ S₁ = S
+
+-- _⊕ₚ_ : {S S₁ : Set} → (P : S → ℕ) → (P₁ : S₁ → ℕ) → ((S ⊕ₛ S₁) → ℕ)
+-- _⊕ₚ_  {S} {S₁} P  P₁ = λ s → P s
+-- -- {! λ (S ⊕ₛ S₁) → (P S) + (P₁ S₁) - elements in common   !}
 
 
--- elemToSets : {S S₁ : Set} 
+-- -- elemToSets : {S S₁ : Set} 
+
+-- inl : {S S₁ : Set} {P : S → ℕ} {P₁ : S₁ → ℕ} 
+--     → Tree S P → Tree (S ⊕ₛ S₁) (P ⊕ₚ P₁)
+-- inl {S} {S₁} {P} {P₁} (Node s x) = Node s x
+-- -- Node {! an element of S in common with S₁  !} {!  !}
+
+
+
+-- inr : {S S₁ : Set} {P : S → ℕ} {P₁ : S₁ → ℕ} 
+--     → Tree S₁ P₁ → Tree (S ⊕ₛ S₁) (P ⊕ₚ P₁)
+-- inr (Node s₁ x₁) = Node {! s₁  !} {!   !}
+-- -- Node {! an element of S₁ in common with S  !} {!   !}
+
+
+-- what if we use Fin to show that there are 2 inhabitants?
+_⊕ₛ_ : (S : Set) → (S₁ : Set) → {f : Fin 2} → Set
+(S ⊕ₛ S₁) {fzero} = S
+(S ⊕ₛ S₁) {fsucc fzero} = S₁
+
+-- ha ha!
+
+_⊕ₚ_ : {S S₁ : Set} → (P : S → ℕ) → (P₁ : S₁ → ℕ)
+     → {f : Fin 2} → ((S ⊕ₛ S₁) {f} → ℕ)
+_⊕ₚ_ {S} {S₁} P P₁ {fzero} = λ s → P s
+_⊕ₚ_ {S} {S₁} P P₁ {fsucc fzero} = λ s → P₁ s
+
 
 inl : {S S₁ : Set} {P : S → ℕ} {P₁ : S₁ → ℕ} 
     → Tree S P → Tree (S ⊕ₛ S₁) (P ⊕ₚ P₁)
 inl {S} {S₁} {P} {P₁} (Node s x) = Node s x
--- Node {! an element of S in common with S₁  !} {!  !}
-
 
 
 inr : {S S₁ : Set} {P : S → ℕ} {P₁ : S₁ → ℕ} 
     → Tree S₁ P₁ → Tree (S ⊕ₛ S₁) (P ⊕ₚ P₁)
-inr (Node s₁ x₁) = Node {! s₁  !} {!   !}
--- Node {! an element of S₁ in common with S  !} {!   !}
-
+inr (Node s₁ x₁) = Node s₁ x₁
 
 
 
