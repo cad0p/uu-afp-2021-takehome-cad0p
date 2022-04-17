@@ -235,7 +235,7 @@ node l r = Node Node (TreeNodeSubTrees l r)
     image of __f__
 -}
 
--- old approach, was just a hack..
+-- craftFin is really useful, I used it in the final version
 
 -- it seems to work but I don't know why it needs
 -- this useless implicit argument
@@ -243,6 +243,9 @@ node l r = Node Node (TreeNodeSubTrees l r)
 craftFin : (n : ℕ) {f : Fin n} → Fin n
 craftFin (succ zero) = fzero
 craftFin (succ (succ n)) = fsucc (craftFin (succ n) {fzero})
+
+
+-- old approach, was just a hack..
 
 
 -- sums all the natural numbers in the image of f
@@ -264,7 +267,7 @@ sumFin (succ n) f = f (craftFin (succ n) {fzero})
 mutual
     -- i need some list comprehension here, will define here:
     gsubsize : (S : Set) (P : S → ℕ) → (n : ℕ)
-        → (Fin (n) → Tree S P) → ℕ
+        → (Fin n → Tree S P) → ℕ
     gsubsize S P zero f = zero
     gsubsize S P (succ n) f = gsize {S} {P} (f (craftFin (succ n) {fzero})) 
         + gsubsize S P n λ x → f (embed x)
@@ -278,10 +281,8 @@ mutual
     -- cons has P s ≡ 1, and nil has P s ≡ 0
     ... | succ n = succ n + gsubsize S P (succ n) f 
     -- + gsize {S} {P} (f (craftFin {! n  !}))
+    -- this is what subsize does! for all the inhabitants of Fin n
 
--- -- sums all the natural numbers in the image of f
--- sumFin : (n : ℕ) → (Fin n → ℕ) → ℕ
--- sumFin n P = {!   !}
 
 ----------------------
 -------- (d) ---------
@@ -300,8 +301,24 @@ data M : Set where
     z : M
     _+M_ : M → M → M
 
-foldMap : {S : Set} {P : S → ℕ} → (S → M) → Tree S P → M
-foldMap {S} {P} f (Node s x) = f s +M foldMap f (x {! fzero {P s}  !})
+
+{-# TERMINATING #-}
+mutual
+    -- another list comprehension..
+    -- i don't know, maybe this pattern could be generalized
+    -- in a more general helper
+    foldSubMap : (S : Set) (P : S → ℕ) → (S → M) → (n : ℕ)
+        → (Fin n → Tree S P) → M
+    foldSubMap S P f zero sub = z
+    foldSubMap S P f (succ n) sub = 
+        (foldMap {S} {P} f (sub (craftFin (succ n) {fzero}))) 
+        +M foldSubMap S P f n (λ x → sub (embed x))
+
+    foldMap : {S : Set} {P : S → ℕ} → (S → M) → Tree S P → M
+    foldMap {S} {P} f (Node s sub) with P s
+    ... | zero = f s
+    ... | succ n = f s +M foldSubMap S P f (succ n) sub
+        -- +M foldMap f (x {! fzero {P s}  !})
 
 
 
