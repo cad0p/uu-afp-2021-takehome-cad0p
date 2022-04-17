@@ -308,16 +308,17 @@ mutual
     -- i don't know, maybe this pattern could be generalized
     -- in a more general helper
     foldSubMap : (S : Set) (P : S → ℕ) → (S → M) → (n : ℕ)
-        → (Fin n → Tree S P) → M
-    foldSubMap S P f zero sub = z
+        → (Fin (succ n) → Tree S P) → M
+    foldSubMap S P f zero sub =
+        foldMap {S} {P} f (sub fzero) 
     foldSubMap S P f (succ n) sub = 
-        (foldMap {S} {P} f (sub (craftFin (succ n) {fzero}))) 
+        (foldMap {S} {P} f (sub (craftFin (succ (succ n)) {fzero}))) 
         +M foldSubMap S P f n (λ x → sub (embed x))
 
     foldMap : {S : Set} {P : S → ℕ} → (S → M) → Tree S P → M
     foldMap {S} {P} f (Node s sub) with P s
     ... | zero = f s
-    ... | succ n = f s +M foldSubMap S P f (succ n) sub
+    ... | succ n = f s +M foldSubMap S P f n sub
         -- +M foldMap f (x {! fzero {P s}  !})
 
 

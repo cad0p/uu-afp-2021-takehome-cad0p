@@ -145,18 +145,18 @@ testFoldMapListNil : foldMap showList nil  ≡ z
 testFoldMapListNil = refl
 
 testFoldMapListCons0Nil : foldMap showList (cons 0 nil)  ≡ 
-    ((z +M z) +M (z +M z))
+    ((z +M z) +M z)
 testFoldMapListCons0Nil = refl
 
 testFoldMapListCons1Nil : foldMap showList (cons 1 nil)  ≡ 
-    ((z +M (z +M z)) +M (z +M z))
+    ((z +M (z +M z)) +M z)
 testFoldMapListCons1Nil = refl
 
 
 testFoldMapListCons2Nil : foldMap showList (cons 2 nil)  ≡ 
-    ((z +M (z +M (z +M z))) +M (z +M z))
+    ((z +M (z +M (z +M z))) +M z)
 testFoldMapListCons2Nil = refl
 
 testFoldMapListCons1Cons2Nil : foldMap showList (cons 1 (cons 2 nil))  ≡ 
-    ((z +M (z +M z)) +M (((z +M (z +M (z +M z))) +M (z +M z)) +M z))
+    ((z +M (z +M z)) +M ((z +M (z +M (z +M z))) +M z))
 testFoldMapListCons1Cons2Nil = refl
