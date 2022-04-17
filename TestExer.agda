@@ -160,3 +160,32 @@ testFoldMapListCons2Nil = refl
 testFoldMapListCons1Cons2Nil : foldMap showList (cons 1 (cons 2 nil))  ≡ 
     ((z +M (z +M z)) +M ((z +M (z +M (z +M z))) +M z))
 testFoldMapListCons1Cons2Nil = refl
+
+showNode : TreeS → M
+showNode Node = (z +M z) +M (z +M z)
+showNode (Leaf zero) = z
+showNode (Leaf (succ x)) = z +M showNode (Leaf x)
+
+testFoldMapTreeLeaf0 : foldMap showNode (leaf 0) ≡ z
+testFoldMapTreeLeaf0 = refl
+
+testFoldMapTreeLeaf1 : foldMap showNode (leaf 1) ≡ (z +M z)
+testFoldMapTreeLeaf1 = refl
+
+testFoldMapTreeLeaf2 : foldMap showNode (leaf 2) ≡ (z +M (z +M z))
+testFoldMapTreeLeaf2 = refl
+
+testFoldMapTreeNodeSimple : foldMap showNode nodeSimple ≡
+    (((z +M z) +M (z +M z)) +M ((z +M z) +M z))
+testFoldMapTreeNodeSimple = refl
+
+-- here the tree is processed in post-order i think
+-- which means that first the right child, then the left child
+testFoldMapTreeNode7 : foldMap showNode node7 ≡
+    (((z +M z) +M (z +M z)) +M 
+        -- node (leaf 1) (leaf 2)
+        ((((z +M z) +M (z +M z)) +M ((z +M (z +M z)) +M (z +M z)))
+        -- leaf 0
+        +M z))
+testFoldMapTreeNode7 = refl
+
