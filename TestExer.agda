@@ -40,14 +40,14 @@ testTreeNode1 = refl
 -------- (c) ---------
 ----------------------
 
--- testCraftFin1 : craftFin 1 {fzero} ≡ fzero
--- testCraftFin1 = refl
+testCraftFin1 : craftFin 1 {fzero} ≡ fzero
+testCraftFin1 = refl
 
--- testCraftFin2 : craftFin 2 {fzero} ≡ fsucc fzero
--- testCraftFin2 = refl
+testCraftFin2 : craftFin 2 {fzero} ≡ fsucc fzero
+testCraftFin2 = refl
 
--- testSumFin1 : sumFin 1 forget ≡ 1
--- testSumFin1 = refl
+testSumFin1 : sumFin 1 (λ x → ListP Nil) ≡ zero
+testSumFin1 = refl
 
 -- testSumFin2 : sumFin 2 forget ≡ 2 --3
 -- testSumFin2 = refl
