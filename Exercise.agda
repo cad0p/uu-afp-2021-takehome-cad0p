@@ -438,6 +438,14 @@ inr (Node s₁ x₁) = Node s₁ x₁
             _,_ : (s : S) → B s → DPair S B
         toPF : (S : Set) → (P : S → ℕ) → Set → Set
         toPF S P a = DPair S (λ s → Fin (P s) → a)
+
+
+    Use this definition to formulate properties showing your 
+    definitions for coproducts is correct. Hint:
+    define conversions between the pattern functors arising 
+    between coproducts and the usual coproduct of pattern
+    functors using Either. Prove that these conversions are
+    mutual inverse.
 -}
 
 data DPair (S : Set) (B : S → Set) : Set where
@@ -458,12 +466,34 @@ toPF S P a = DPair S (λ s → Fin (P s) → a)
 -- data Pair (a b : Set) : Set where
 --   _,_ : a -> b -> Pair a b
 
--- data Either (a b : Set) : Set where
---   inl : a -> Either a b
---   inr : b -> Either a b
+data Either (a b : Set) : Set where
+  Left : a -> Either a b
+  Right : b -> Either a b
 
 
-data DEither (S : Set) (B : S → Set) : Set where
-    Inl : (s : S) → DEither S B
-    Inr : {s : S} → B s → DEither S B
+-- data DEither (S : Set) (B : S → Set) : Set where
+--     Inl : (s : S) → DEither S B
+--     Inr : {s : S} → B s → DEither S B
 
+-- define conversions?
+
+propL : inl {ListS} {TreeS} {ListP} {TreeP} nil ≡ nil
+propL = refl
+
+
+propR : inr {ListS} {TreeS} {ListP} {TreeP} (leaf 0) ≡ leaf 0
+propR = refl
+
+
+aListOrTree : Tree (ListS ⊕ₛ TreeS) (ListP ⊕ₚ TreeP)
+aListOrTree = nil
+
+
+anotherListOrTree : Tree (ListS ⊕ₛ TreeS) (ListP ⊕ₚ TreeP)
+anotherListOrTree = leaf 0
+
+aPairOfListAndTree : toPF TTree (λ _ → 1) (Either TList TTree)
+aPairOfListAndTree = leaf 0 , λ fzero → Left nil
+
+-- propEitherL : toPF ? ? ? ≡ Left nil
+-- propEitherL = refl
