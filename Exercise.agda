@@ -356,7 +356,7 @@ mutual
 -- {-# BUILTIN LEVELSUC  lsuc  #-}
 -- {-# BUILTIN LEVELMAX  _⊔_   #-}
 
-open import Agda.Primitive using (Level; _⊔_)
+-- open import Agda.Primitive using (Level; _⊔_)
 
 -- data _×_ {n m : Level} (A : Set n) (B : Set m) : Set (n ⊔ m)  where
 --   _,_ : A → B → A × B

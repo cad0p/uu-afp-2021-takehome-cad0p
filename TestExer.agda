@@ -180,7 +180,7 @@ testFoldMapTreeNodeSimple : foldMap showNode nodeSimple ≡
 testFoldMapTreeNodeSimple = refl
 
 -- here the tree is processed in post-order i think
--- which means that first the right child, then the left child
+-- which means that first the root, then the right child, then the left child
 testFoldMapTreeNode7 : foldMap showNode node7 ≡
     (((z +M z) +M (z +M z)) +M 
         -- node (leaf 1) (leaf 2)
